@@ -1,4 +1,6 @@
-# CF Speed DNS
+# CF IP DNS
+
+**项目源自：** [ZhiXuanWang/cf-speed-dns](https://github.com/ZhiXuanWang/cf-speed-dns)
 
 **CF优选IP，实时更新列表页面：** [CF优选IP列表](https://ip.164746.xyz)
 
