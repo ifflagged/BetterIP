@@ -1,4 +1,4 @@
-name: Run DNS CF Push
+name: Run Push Better IP
 
 on:
   schedule:
@@ -31,4 +31,4 @@ jobs:
           CF_ZONE_ID: ${{ secrets.CF_ZONE_ID }}
           CF_DNS_NAME: ${{ secrets.CF_DNS_NAME }}
         run: |
-          python dnscf.py
+          python Push-CF.py
