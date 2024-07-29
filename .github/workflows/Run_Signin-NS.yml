@@ -25,8 +25,9 @@ jobs:
 
       - name: Run script
         env:
-          NS_COOKIES: ${{ secrets.NS_COOKIES }}  # 使用逗号分隔多个 cookie
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.TG_ID }}
+          COOKIE: ${{ secrets.COOKIE }}
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.CHAT_ID }}
         run: |
           python Signin-NS.py
