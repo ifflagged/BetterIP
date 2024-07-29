@@ -3,7 +3,7 @@ name: NodeSeek 签到
 on:
   push:
     branches:
-      - main  # 在 main 分支上进行推送时触发 
+      - main  # 在 main 分支上进行推送时触发
   schedule:
     - cron: '23 7 * * *'  # 每天执行
 
@@ -14,18 +14,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      
+     
       - name: Set up Python environment
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
 
-      - name: install
+      - name: Install dependencies
         run: pip install requests curl_cffi
 
-      - name: run
+      - name: Run script
         env:
-          COOKIE: ${{ secrets.NS_COOKIE }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          NS_COOKIES: ${{ secrets.NS_COOKIES }}  # 使用逗号分隔多个 cookie
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TG_ID }}
         run: |
           python Signin-NS.py
