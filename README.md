@@ -21,6 +21,34 @@
       - `CF_DNS_NAME`：要更新的 DNS 名称（例如：`dns.abc.com`）
 
 2. **配置 GitHub Actions 工作流程**：
-   - 在你的仓库中创建 `.github/workflows/run_dnscf.yml` 文件
+   - 在你的仓库中创建 `.github/workflows/Run_Push-CF.yml` 文件
 
 完成这些步骤后，GitHub Actions 将根据你设置的计划任务自动运行，并更新你的 Cloudflare DNS 记录。
+
+
+# NS
+
+**项目源自：** [WO/NodeSeek-Signin](https://github.com/YYWO/NodeSeek-Signin/tree/main)
+
+## GitHub Actions 配置
+
+要配置 GitHub Actions 以自动运行此项目，请按照以下步骤操作：
+
+1. **添加 GitHub Secrets**：
+   1. 进入你的 GitHub 仓库。
+   2. 点击 **Settings**（设置）。
+   3. 在左侧菜单中找到 **Secrets and variables** > **Actions**。
+   4. 点击 **New repository secret**（新建仓库密钥）。
+   5. 添加以下密钥：
+      - `COOKIE`：你的 cookie 在 F12中查看（例如：`xxxxx`）
+      - `TELEGRAM_BOT_TOKEN`：你的 Telegram Bot Token（例如：`xxxxx`）
+      - `CHAT_ID`：你的 Telegram ID（例如：`dns.abc.com`）
+
+2. **配置 GitHub Actions 工作流程**：
+   - 在你的仓库中创建 `.github/workflows/Run_Signin-NS.yml` 文件
+
+完成这些步骤后，GitHub Actions 将根据你设置的计划任务自动运行，并进行签到。
+
+青龙面板
+ql raw https://raw.githubusercontent.com/ifflagged/BetterIP/main/Signin-NS.py
+配置：NS_COOKIE
