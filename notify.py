@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 # _*_ coding:utf-8 _*_
-import json
+
+import requests
+import threading
 import os
 import re
-import threading
-import requests
 
 # 原先的 print 函数和主线程的锁
 _print = print
@@ -18,19 +18,25 @@ def print(text, *args, **kw):
     with mutex:
         _print(text, *args, **kw)
 
-# Telegram 配置
+# Telegram 推送配置
 push_config = {
-    'TG_BOT_TOKEN': os.getenv('TG_BOT_TOKEN'),
-    'TG_USER_ID': os.getenv('TG_USER_ID'),
-    'TG_API_HOST': os.getenv('TG_API_HOST'),
-    'TG_PROXY_AUTH': os.getenv('TG_PROXY_AUTH'),
-    'TG_PROXY_HOST': os.getenv('TG_PROXY_HOST'),
-    'TG_PROXY_PORT': os.getenv('TG_PROXY_PORT')
+    'TG_BOT_TOKEN': '',  # tg 机器人的 TG_BOT_TOKEN，例：1407203283:AAG9rt-6RDaaX0HBLZQq0laNOh898iFYaRQ
+    'TG_USER_ID': '',    # tg 机器人的 TG_USER_ID，例：1434078534
+    'TG_API_HOST': '',   # tg 代理 api
+    'TG_PROXY_AUTH': '', # tg 代理认证参数
+    'TG_PROXY_HOST': '', # tg 机器人的 TG_PROXY_HOST
+    'TG_PROXY_PORT': ''  # tg 机器人的 TG_PROXY_PORT
 }
+
+# 首先读取 面板变量 或者 github action 运行变量
+for k in push_config:
+    if os.getenv(k):
+        v = os.getenv(k)
+        push_config[k] = v
 
 def telegram_bot(title: str, content: str) -> None:
     """
-    使用 Telegram 机器人推送消息。
+    使用 telegram 机器人 推送消息。
     """
     if not push_config.get("TG_BOT_TOKEN") or not push_config.get("TG_USER_ID"):
         print("tg 服务的 bot_token 或者 user_id 未设置!!\n取消推送")
@@ -64,39 +70,44 @@ def telegram_bot(title: str, content: str) -> None:
         )
         proxies = {"http": proxyStr, "https": proxyStr}
     response = requests.post(
-        url=url, headers=headers, data=payload, proxies=proxies
+        url=url, headers=headers, params=payload, proxies=proxies
     ).json()
 
-    if response.get("ok"):
+    if response["ok"]:
         print("tg 推送成功！")
     else:
-        print(f"tg 推送失败！{response.get('description')}")
+        print("tg 推送失败！")
 
-def merge_cookies(cookies_list):
-    """
-    合并多个 cookies 签到结果。
-    """
-    merged_results = []
-    for index, cookies in enumerate(cookies_list, start=1):
-        merged_results.append(f"用户 {index} 的签到结果：\n{cookies}")
-    return "\n\n".join(merged_results)
+def send(title: str, contents: list, **kwargs):
+    if kwargs:
+        global push_config
+        push_config.update(kwargs)
 
-def send_cookies(cookies_list):
-    """
-    合并多个 cookies 签到结果并通过 Telegram 发送。
-    """
-    title = "多个用户的 Cookies 签到结果"
-    content = merge_cookies(cookies_list)
-    telegram_bot(title, content)
+    if not contents:
+        print(f"{title} 推送内容为空！")
+        return
+
+    # 根据标题跳过一些消息推送，环境变量：SKIP_PUSH_TITLE 用回车分隔
+    skipTitle = os.getenv("SKIP_PUSH_TITLE")
+    if skipTitle:
+        if title in re.split("\n", skipTitle):
+            print(f"{title} 在SKIP_PUSH_TITLE环境变量内，跳过推送！")
+            return
+
+    # 合并内容
+    combined_content = "\n\n".join(contents)
+
+    notify_function = [telegram_bot]  # 只使用 telegram_bot 作为推送函数
+    ts = [
+        threading.Thread(target=mode, args=(title, combined_content), name=mode.__name__)
+        for mode in notify_function
+    ]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
 
 def main():
-    # 示例 cookies 列表
-    cookies_list = [
-        "用户1: cookie1=value1; cookie2=value2",
-        "用户2: cookie3=value3; cookie4=value4",
-        "用户3: cookie5=value5; cookie6=value6"
-    ]
-    send_cookies(cookies_list)
+    # 传递多个内容进行合并
+    send("title", ["content part 1", "content part 2", "content part 3"])
 
 if __name__ == "__main__":
     main()
