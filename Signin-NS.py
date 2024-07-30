@@ -74,12 +74,17 @@ def process_cookie(cookie):
 
     try:
         response = requests.post(url, headers=headers)
+        # 输出响应的状态码和内容，帮助调试
+        print(f"Response status code: {response.status_code}")
+        print(f"Response content: {response.text}")
+        
         response_data = response.json()
         print(response_data)
-        message = response_data.get('message', 'No message')
-        success = response_data.get('success', 'false')
-        if hadsend:
-            send("nodeseek签到", [message])
+        
+        message = response_data.get('message')
+        success = response_data.get('success')
+        send("nodeseek签到", [message])
+        
         if success == "true":
             print(message)
             if telegram_bot_token and chat_id:
@@ -91,7 +96,8 @@ def process_cookie(cookie):
             if pushplus_token:
                 pushplus_ts(pushplus_token, "nodeseek签到", message)
     except Exception as e:
-        print(f"发生异常: {e}")
+        print("发生异常:", e)
+        print("实际响应内容:", response.text)
 
 if NS_COOKIES:
     for cookie in NS_COOKIES:
