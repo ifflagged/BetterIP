@@ -56,5 +56,7 @@
 
 ```bash
 ql raw https://raw.githubusercontent.com/ifflagged/BetterIP/main/Signin-NS.py
+```
 
-配置： `NS_COOKIE`
+**配置：** `NS_COOKIE`
+```
