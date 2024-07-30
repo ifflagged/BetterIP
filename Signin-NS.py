@@ -37,7 +37,7 @@ def load_send():
 load_send()
 
 # 从环境变量获取Cookie
-COOKIE_ENV = os.environ.get("NS_COOKIE")
+COOKIE_ENV = os.environ.get("NS_COOKIES")
 if COOKIE_ENV:
     url = f"https://www.nodeseek.com/api/attendance?random={datetime.datetime.now().timestamp()}"
     headers = {
