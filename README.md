@@ -41,7 +41,7 @@
    3. 在左侧菜单中找到 **Secrets and variables** > **Actions**。
    4. 点击 **New repository secret**（新建仓库密钥）。
    5. 添加以下密钥：
-      - `NS_COOKIES`：你的 cookie（在浏览器的开发者工具中查看，例如：`xxxxx`）
+      - `NS_COOKIES`：你的 cookie（在浏览器的开发者工具中查看，多用户用","分开，例如：`xxxxx`）
       - `TG_BOT_TOKEN`：你的 Telegram Bot Token（例如：`xxxxx`）
       - `TG_USER_ID`：你的 Telegram 用户 ID（例如：`xxxxx`）
 
