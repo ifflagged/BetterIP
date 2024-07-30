@@ -1,14 +1,14 @@
 # -- coding: utf-8 --
 import os
 import sys
-from curl_cffi import requests
+import requests  # 使用requests库替代curl_cffi
 
 NS_RANDOM = os.environ.get("NS_RANDOM", "false")
 NS_COOKIES = os.environ.get("NS_COOKIES", "").split(',')
 pushplus_token = os.environ.get("PUSHPLUS_TOKEN")
 telegram_bot_token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 chat_id = os.environ.get("CHAT_ID", "")
-telegram_api_url = os.environ.get("TELEGRAM_API_URL", "https://api.telegram.org") # 代理api,可以使用自己的反代
+telegram_api_url = os.environ.get("TELEGRAM_API_URL", "https://api.telegram.org")  # 代理API，可以使用自己的反代
 
 def telegram_Bot(token, chat_id, message):
     url = f'{telegram_api_url}/bot{token}/sendMessage'
@@ -16,10 +16,13 @@ def telegram_Bot(token, chat_id, message):
         'chat_id': chat_id,
         'text': message
     }
-    r = requests.post(url, json=data)
-    response_data = r.json()
-    msg = response_data.get('ok', False)
-    print(f"telegram推送结果：{msg}\n")
+    try:
+        response = requests.post(url, json=data)
+        response_data = response.json()
+        msg = response_data.get('ok', False)
+        print(f"telegram推送结果：{msg}\n")
+    except Exception as e:
+        print(f"Telegram 推送失败: {e}")
 
 def pushplus_ts(token, rw, msg):
     url = 'https://www.pushplus.plus/send/'
@@ -28,9 +31,12 @@ def pushplus_ts(token, rw, msg):
         "title": rw,
         "content": msg
     }
-    r = requests.post(url, json=data)
-    msg = r.json().get('msg', None)
-    print(f'pushplus推送结果：{msg}\n')
+    try:
+        response = requests.post(url, json=data)
+        msg = response.json().get('msg', None)
+        print(f'pushplus推送结果：{msg}\n')
+    except Exception as e:
+        print(f"PushPlus 推送失败: {e}")
 
 def load_send():
     global send
@@ -41,7 +47,7 @@ def load_send():
         try:
             from notify import send
             hadsend = True
-        except:
+        except ImportError:
             print("加载notify.py的通知服务失败，请检查~")
             hadsend = False
     else:
@@ -67,12 +73,13 @@ def process_cookie(cookie):
     }
 
     try:
-        response = requests.post(url, headers=headers, impersonate="chrome110")
+        response = requests.post(url, headers=headers)
         response_data = response.json()
         print(response_data)
-        message = response_data.get('message')
-        success = response_data.get('success')
-        send("nodeseek签到", message)
+        message = response_data.get('message', 'No message')
+        success = response_data.get('success', 'false')
+        if hadsend:
+            send("nodeseek签到", [message])
         if success == "true":
             print(message)
             if telegram_bot_token and chat_id:
@@ -84,8 +91,7 @@ def process_cookie(cookie):
             if pushplus_token:
                 pushplus_ts(pushplus_token, "nodeseek签到", message)
     except Exception as e:
-        print("发生异常:", e)
-        print("实际响应内容:", response.text)
+        print(f"发生异常: {e}")
 
 if NS_COOKIES:
     for cookie in NS_COOKIES:
