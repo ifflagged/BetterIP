@@ -24,9 +24,8 @@ jobs:
 
     - name: Run the sign-in script
       env:
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
         TG_USER_ID: ${{ secrets.TG_USER_ID }}
         NS_COOKIES: ${{ secrets.NS_COOKIES }}
-        TELEGRAM_API_URL: ${{ secrets.TELEGRAM_API_URL }}
       run: |
         python Signin-NS.py
