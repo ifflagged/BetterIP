@@ -4,6 +4,7 @@ import sys
 from curl_cffi import requests
 
 # 从环境变量获取配置
+NS_RANDOM = os.environ.get("NS_RANDOM","false")
 NS_COOKIES = os.environ.get("NS_COOKIES", "")
 telegram_bot_token = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 TG_USER_ID = os.environ.get("TG_USER_ID", "")
@@ -35,10 +36,19 @@ def load_send():
 load_send()
 
 if NS_COOKIES:
-    url = f"https://www.nodeseek.com/api/attendance?random={int(time.time())}"
+    url = f"https://www.nodeseek.com/api/attendance?random={NS_RANDOM}"
     headers = {
         'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
-        'Cookie': NS_COOKIES
+        'sec-ch-ua': "\"Not A(Brand\";v=\"99\", \"Microsoft Edge\";v=\"121\", \"Chromium\";v=\"121\"",
+        'sec-ch-ua-mobile': "?0",
+        'sec-ch-ua-platform': "\"Windows\"",
+        'origin': "https://www.nodeseek.com",
+        'sec-fetch-site': "same-origin",
+        'sec-fetch-mode': "cors",
+        'sec-fetch-dest': "empty",
+        'referer': "https://www.nodeseek.com/board",
+        'accept-language': "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
+        'Cookie': COOKIE_ENV
     }
 
     try:
