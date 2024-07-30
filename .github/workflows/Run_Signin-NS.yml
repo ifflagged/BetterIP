@@ -1,0 +1,33 @@
+name: NodeSeek 签到
+
+on:
+  push:
+    branches:
+      - main  # 在 main 分支上进行推送时触发
+  schedule:
+    - cron: '23 7 * * *'  # 每天执行
+
+jobs:
+  run-nodeseek-sign:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python environment
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install requests curl_cffi
+
+      - name: Run script
+        env:
+          NS_COOKIES: ${{ secrets.NS_COOKIES }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          CHAT_ID: ${{ secrets.TG_ID }}
+          PUSHPLUS_TOKEN: ${{ secrets.PUSHPLUS_TOKEN }}  # 如果你使用 PushPlus 推送
+        run: |
+          python Signin-NS.py
