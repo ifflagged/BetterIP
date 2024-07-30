@@ -1,31 +1,31 @@
-name: NodeSeek 签到
+name: NodeSeek签到
 
 on:
-  push:
-    branches:
-      - main  # 在 main 分支上进行推送时触发
   schedule:
-    - cron: '23 7 * * *'  # 每天执行
+    - cron: '23 7 * * *'  # 每天7点23分运行
 
 jobs:
-  run-nodeseek-sign:
+  run-signin:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Set up Python environment
-        uses: actions/setup-python@v4
-        with:
-          python-version: '3.11'
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
 
-      - name: Install dependencies
-        run: pip install requests curl_cffi
+    - name: Install dependencies
+      run: |
+        pip install curl_cffi requests
 
-      - name: Run script
-        env:
-          NS_COOKIES: ${{ secrets.NS_COOKIES }}
-          TELEGRAM_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-          CHAT_ID: ${{ secrets.TG_ID }}
-        run: python Signin-NS.py
+    - name: Run the sign-in script
+      env:
+        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+        TG_USER_ID: ${{ secrets.TG_USER_ID }}
+        NS_COOKIE: ${{ secrets.NS_COOKIE }}
+        TELEGRAM_API_URL: ${{ secrets.TELEGRAM_API_URL }}
+      run: |
+        python Signin-NS.py
