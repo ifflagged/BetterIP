@@ -48,7 +48,7 @@ if NS_COOKIES:
         'sec-fetch-dest': "empty",
         'referer': "https://www.nodeseek.com/board",
         'accept-language': "zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6",
-        'Cookie': COOKIE_ENV
+        'Cookie': NS_COOKIES
     }
 
     try:
