@@ -3,6 +3,7 @@ name: NodeSeek签到
 on:
   schedule:
     - cron: '23 7 * * *'  # 每天7点23分运行
+  workflow_dispatch: # 手动触发工作流
 
 jobs:
   run-signin:
