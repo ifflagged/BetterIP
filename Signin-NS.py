@@ -6,6 +6,7 @@ from curl_cffi import requests
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 TG_USER_ID = os.environ.get("TG_USER_ID", "")
 NS_COOKIES = os.environ.get("NS_COOKIES", "").split(',')
+NS_RANDOM = os.environ.get("NS_RANDOM", "false")
 
 def telegram_Bot(token, TG_USER_ID, message):
     url = f'https://api.telegram.org/bot{token}/sendMessage'
@@ -15,8 +16,12 @@ def telegram_Bot(token, TG_USER_ID, message):
     }
     r = requests.post(url, json=data)
     response_data = r.json()
-    msg = response_data['ok']
+    msg = response_data.get('ok', False)
     print(f"Telegram 推送结果：{msg}\n")
+
+def send(title, message):
+    # 替换为实际的发送实现
+    print(f"Title: {title}\nMessage: {message}")
 
 def load_send():
     global send
@@ -27,7 +32,7 @@ def load_send():
         try:
             from notify import send
             hadsend = True
-        except:
+        except ImportError:
             print("加载 notify.py 的通知服务失败，请检查~")
             hadsend = False
     else:
@@ -38,7 +43,7 @@ load_send()
 
 if NS_COOKIES:
     for cookie in NS_COOKIES:
-        url = f"https://www.nodeseek.com/api/attendance"
+        url = f"https://www.nodeseek.com/api/attendance?random={NS_RANDOM}"
         headers = {
             'User-Agent': "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36 Edg/125.0.0.0",
             'sec-ch-ua': "\"Not A(Brand\";v=\"99\", \"Microsoft Edge\";v=\"121\", \"Chromium\";v=\"121\"",
@@ -70,6 +75,7 @@ if NS_COOKIES:
                     telegram_Bot(TG_BOT_TOKEN, TG_USER_ID, message)
         except Exception as e:
             print("发生异常:", e)
-            print("实际响应内容:", response.text)
+            if 'response' in locals():
+                print("实际响应内容:", response.text)
 else:
     print("请先设置 Cookies")
