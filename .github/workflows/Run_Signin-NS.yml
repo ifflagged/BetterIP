@@ -2,7 +2,7 @@ name: NodeSeek签到
 
 on:
   schedule:
-    - cron: '23 7 * * *'  # 每天7点23分运行
+    - cron: '23 23 * * *'  # 每天 UTC 时间 23:23 运行，即北京时间 7:23
   workflow_dispatch: # 手动触发工作流
 
 jobs:
