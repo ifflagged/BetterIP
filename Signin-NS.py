@@ -6,7 +6,7 @@ from curl_cffi import requests
 TG_BOT_TOKEN = os.environ.get("TG_BOT_TOKEN", "")
 TG_USER_ID = os.environ.get("TG_USER_ID", "")
 NS_COOKIES = os.environ.get("NS_COOKIES", "").split(',')
-NS_RANDOM = os.environ.get("NS_RANDOM", "false")
+NS_RANDOM = os.environ.get("NS_RANDOM", "true")
 
 def telegram_Bot(token, TG_USER_ID, message):
     url = f'https://api.telegram.org/bot{token}/sendMessage'
