@@ -40,7 +40,6 @@ def get_dns_records(name):
         return def_info
     else:
         print('Error fetching DNS records:', response.text)
-        return def_info  # 确保函数返回列表，即使请求失败
 
 # 更新 DNS 记录
 def update_dns_record(record_id, name, cf_ip):
@@ -58,31 +57,22 @@ def update_dns_record(record_id, name, cf_ip):
             time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- ip：" + str(cf_ip))
         return "ip:" + str(cf_ip) + "解析" + str(name) + "成功"
     else:
+        traceback.print_exc()
         print(f"cf_dns_change ERROR: ---- Time: " + str(
-            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- MESSAGE: " + response.text)
+            time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())) + " ---- MESSAGE: " + str(e))
         return "ip:" + str(cf_ip) + "解析" + str(name) + "失败"
 
 # 主函数
 def main():
     # 获取最新优选IP
     ip_addresses_str = get_cf_speed_test_ip()
-    if ip_addresses_str is None:
-        print("获取优选 IP 失败")
-        return
-
     ip_addresses = ip_addresses_str.split(',')
     dns_records = get_dns_records(CF_DNS_NAME)
-
-    if len(dns_records) == 0:
-        print("获取 DNS 记录失败")
-        return
-
-    # 确保 IP 地址列表和 DNS 记录列表长度匹配
-    num_records = min(len(ip_addresses), len(dns_records))
-    for index in range(num_records):
-        ip_address = ip_addresses[index]
+    # 遍历 IP 地址列表
+    for index, ip_address in enumerate(ip_addresses):
+        # 执行 DNS 变更
         dns = update_dns_record(dns_records[index], CF_DNS_NAME, ip_address)
-        print(dns)
+        print(dns)  # 输出到控制台，不再发送推送
 
 if __name__ == '__main__':
     main()
