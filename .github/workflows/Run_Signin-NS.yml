@@ -6,26 +6,36 @@ on:
   workflow_dispatch: # 手动触发工作流
 
 jobs:
-  run-signin:
+  run-nodeseek-sign:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: 检出代码仓库
+        uses: actions/checkout@v3
+      
+      - name: 配置Python环境
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.11.8'
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.8'
+      - name: 安装依赖包
+        run: pip install curl_cffi requests
 
-    - name: Install dependencies
-      run: |
-        pip install curl_cffi requests
+      - name: 运行签到脚本
+        env:
+          # 基本配置
+          NS_COOKIE: ${{ secrets.NS_COOKIE }}
+          NS_USERNAME: ${{ secrets.NS_USERNAME }}
+          NS_PASSWORD: ${{ secrets.NS_PASSWORD }}
+          # NS_RANDOM: ${{ secrets.NS_RANDOM }}
 
-    - name: Run the sign-in script
-      env:
-        TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-        TG_USER_ID: ${{ secrets.TG_USER_ID }}
-        NS_COOKIES: ${{ secrets.NS_COOKIES }}
-      run: |
-        python Signin-NS.py
+          # 验证码服务配置
+          SOLVER_TYPE: ${{ secrets.SOLVER_TYPE }}
+          API_BASE_URL: ${{ secrets.API_BASE_URL }}
+          CLIENTT_KEY: ${{ secrets.CLIENTT_KEY }}
+          
+          # 通知推送配置
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_USER_ID: ${{ secrets.TG_USER_ID }}
+          TG_THREAD_ID: ${{ secrets.TG_THREAD_ID }}
+        run: python Signin-NS.py
