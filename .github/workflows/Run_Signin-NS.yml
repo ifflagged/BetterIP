@@ -5,6 +5,10 @@ on:
     - cron: '23 23 * * *'  # 每天 UTC 时间 23:23 运行，即北京时间 7:23
   workflow_dispatch: # 手动触发工作流
 
+permissions:
+  contents: read
+  actions: write  # 添加写入Actions变量的权限
+
 jobs:
   run-nodeseek-sign:
     runs-on: ubuntu-latest
@@ -19,23 +23,41 @@ jobs:
           python-version: '3.11.8'
 
       - name: 安装依赖包
-        run: pip install curl_cffi requests
+        run: |
+          pip install curl_cffi requests
 
       - name: 运行签到脚本
         env:
-          # 基本配置
-          NS_COOKIES: ${{ secrets.NS_COOKIES }}
+          # 基本账号
           NS_USERNAME: ${{ secrets.NS_USERNAME }}
           NS_PASSWORD: ${{ secrets.NS_PASSWORD }}
-          # NS_RANDOM: ${{ secrets.NS_RANDOM }}
-
-          # 验证码服务配置
+          
+          # 额外账号1-5
+          NS_USERNAME1: ${{ secrets.NS_USERNAME1 }}
+          NS_PASSWORD1: ${{ secrets.NS_PASSWORD1 }}
+          NS_USERNAME2: ${{ secrets.NS_USERNAME2 }}
+          NS_PASSWORD2: ${{ secrets.NS_PASSWORD2 }}
+          NS_USERNAME3: ${{ secrets.NS_USERNAME3 }}
+          NS_PASSWORD3: ${{ secrets.NS_PASSWORD3 }}
+          NS_USERNAME4: ${{ secrets.NS_USERNAME4 }}
+          NS_PASSWORD4: ${{ secrets.NS_PASSWORD4 }}
+          NS_USERNAME5: ${{ secrets.NS_USERNAME5 }}
+          NS_PASSWORD5: ${{ secrets.NS_PASSWORD5 }}
+          
+          # Cookie配置
+          NS_COOKIES: ${{ vars.NS_COOKIES || secrets.NS_COOKIES }}
+          
+          # 验证码配置
           SOLVER_TYPE: ${{ secrets.SOLVER_TYPE }}
           API_BASE_URL: ${{ secrets.API_BASE_URL }}
           CLIENTT_KEY: ${{ secrets.CLIENTT_KEY }}
           
+          # GitHub API配置
+          GH_PAT: ${{ secrets.GH_PAT }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          
           # 通知推送配置
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
-          TG_USER_ID: ${{ secrets.TG_USER_ID }}
+          TG_NS_USERNAME_ID: ${{ secrets.TG_NS_USERNAME_ID }}
           TG_THREAD_ID: ${{ secrets.TG_THREAD_ID }}
-        run: python Signin-NS.py
+        run: python nodeseek_sign.py
