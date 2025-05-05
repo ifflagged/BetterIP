@@ -60,4 +60,4 @@ jobs:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_NS_USERNAME_ID: ${{ secrets.TG_NS_USERNAME_ID }}
           TG_THREAD_ID: ${{ secrets.TG_THREAD_ID }}
-        run: python nodeseek_sign.py
+        run: python Signin-NS.py
