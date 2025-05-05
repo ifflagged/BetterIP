@@ -24,7 +24,7 @@ jobs:
       - name: 运行签到脚本
         env:
           # 基本配置
-          NS_COOKIE: ${{ secrets.NS_COOKIE }}
+          NS_COOKIES: ${{ secrets.NS_COOKIES }}
           NS_USERNAME: ${{ secrets.NS_USERNAME }}
           NS_PASSWORD: ${{ secrets.NS_PASSWORD }}
           # NS_RANDOM: ${{ secrets.NS_RANDOM }}
